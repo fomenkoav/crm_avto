@@ -1,0 +1,2210 @@
+openapi: 3.0.3
+info:
+  title: CRM AutoTransfer API
+  version: 1.0.0
+  description: API для системи управління автотранспортним підприємством
+paths:
+  /api-token-auth/:
+    post:
+      operationId: api_token_auth_create
+      tags:
+      - api-token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/clients/clients/:
+    get:
+      operationId: api_clients_clients_list
+      description: |-
+        ViewSet для клієнтів з підтримкою:
+        - Фільтрації по телефону, email, типу документа
+        - Пошуку по імені та номеру документа
+        - Кастомних ендпоінтів для роботи з ліцензіями
+      parameters:
+      - in: query
+        name: email
+        schema:
+          type: string
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+      - in: query
+        name: license_type
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: phone
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedClientList'
+          description: ''
+    post:
+      operationId: api_clients_clients_create
+      description: |-
+        ViewSet для клієнтів з підтримкою:
+        - Фільтрації по телефону, email, типу документа
+        - Пошуку по імені та номеру документа
+        - Кастомних ендпоінтів для роботи з ліцензіями
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClientCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientCreate'
+          description: ''
+  /api/clients/clients/{id}/:
+    get:
+      operationId: api_clients_clients_retrieve
+      description: |-
+        ViewSet для клієнтів з підтримкою:
+        - Фільтрації по телефону, email, типу документа
+        - Пошуку по імені та номеру документа
+        - Кастомних ендпоінтів для роботи з ліцензіями
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Клієнт.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDetail'
+          description: ''
+    put:
+      operationId: api_clients_clients_update
+      description: |-
+        ViewSet для клієнтів з підтримкою:
+        - Фільтрації по телефону, email, типу документа
+        - Пошуку по імені та номеру документа
+        - Кастомних ендпоінтів для роботи з ліцензіями
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Клієнт.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Client'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    patch:
+      operationId: api_clients_clients_partial_update
+      description: |-
+        ViewSet для клієнтів з підтримкою:
+        - Фільтрації по телефону, email, типу документа
+        - Пошуку по імені та номеру документа
+        - Кастомних ендпоінтів для роботи з ліцензіями
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Клієнт.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClient'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+    delete:
+      operationId: api_clients_clients_destroy
+      description: Деактивація клієнта замість видалення
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Клієнт.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/clients/clients/{id}/update-license/:
+    patch:
+      operationId: api_clients_clients_update_license_partial_update
+      description: Кастомний ендпоінт для оновлення даних документа
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Клієнт.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedClientLicenseUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedClientLicenseUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedClientLicenseUpdate'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientLicenseUpdate'
+          description: ''
+  /api/clients/clients/active/:
+    get:
+      operationId: api_clients_clients_active_retrieve
+      description: Ендпоінт для отримання активних клієнтів
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+  /api/drivers/drivers/:
+    get:
+      operationId: api_drivers_drivers_list
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      parameters:
+      - in: query
+        name: is_active
+        schema:
+          type: boolean
+        description: Активний водій
+      - in: query
+        name: is_available
+        schema:
+          type: boolean
+        description: Доступний для замовлень
+      - in: query
+        name: license_number
+        schema:
+          type: string
+      - in: query
+        name: license_type
+        schema:
+          type: string
+          title: Категорія прав
+          enum:
+          - B
+          - C
+          - D
+        description: |-
+          Тип ліцензії
+
+          * `B` - Легкові авто
+          * `C` - Вантажівки
+          * `D` - Автобуси
+      - in: query
+        name: max_experience
+        schema:
+          type: integer
+        description: Максимальний стаж (роки)
+      - in: query
+        name: min_experience
+        schema:
+          type: integer
+        description: Мінімальний стаж (роки)
+      - in: query
+        name: name__icontains
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDriverList'
+          description: ''
+    post:
+      operationId: api_drivers_drivers_create
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DriverCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DriverCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverCreate'
+          description: ''
+  /api/drivers/drivers/{id}/:
+    get:
+      operationId: api_drivers_drivers_retrieve
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDetail'
+          description: ''
+    put:
+      operationId: api_drivers_drivers_update
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Driver'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Driver'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Driver'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+          description: ''
+    patch:
+      operationId: api_drivers_drivers_partial_update
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDriver'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDriver'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDriver'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+          description: ''
+    delete:
+      operationId: api_drivers_drivers_destroy
+      description: |-
+        ViewSet для водіїв з підтримкою:
+        - Фільтрації по статусу, типу ліцензії
+        - Пошуку по імені та номеру ліцензії
+        - Кастомних ендпоінтів для роботи з доступністю
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/drivers/drivers/{id}/set-availability/:
+    patch:
+      operationId: api_drivers_drivers_set_availability_partial_update
+      description: Зміна доступності водія для замовлень
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverStatus'
+          description: ''
+  /api/drivers/drivers/{id}/update-status/:
+    patch:
+      operationId: api_drivers_drivers_update_status_partial_update
+      description: Оновлення статусу водія (активний/неактивний)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Водій.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverStatus'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverStatus'
+          description: ''
+  /api/drivers/drivers/available/:
+    get:
+      operationId: api_drivers_drivers_available_retrieve
+      description: Кастомний ендпоінт для отримання доступних водіїв
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+          description: ''
+  /api/drivers/drivers/list_available/:
+    get:
+      operationId: api_drivers_drivers_list_available_retrieve
+      description: Кастомний ендпоінт для отримання доступних водіїв
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Driver'
+          description: ''
+  /api/fleet/vehicles/:
+    get:
+      operationId: api_fleet_vehicles_list
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      parameters:
+      - in: query
+        name: fuel_type
+        schema:
+          type: string
+          title: Тип палива
+          enum:
+          - diesel
+          - electric
+          - hybrid
+          - petrol
+        description: |-
+          * `petrol` - Бензин
+          * `diesel` - Дизель
+          * `electric` - Електро
+          * `hybrid` - Гібрид
+      - in: query
+        name: is_available
+        schema:
+          type: boolean
+      - in: query
+        name: max_mileage
+        schema:
+          type: integer
+      - in: query
+        name: max_year
+        schema:
+          type: integer
+      - in: query
+        name: min_mileage
+        schema:
+          type: integer
+      - in: query
+        name: min_year
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: vehicle_type
+        schema:
+          type: string
+          title: Тип транспорту
+          enum:
+          - bus
+          - minivan
+          - sedan
+          - suv
+        description: |-
+          * `sedan` - Седан
+          * `minivan` - Мінівен
+          * `suv` - Позашляховик
+          * `bus` - Автобус
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVehicleList'
+          description: ''
+    post:
+      operationId: api_fleet_vehicles_create
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VehicleCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VehicleCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VehicleCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleCreate'
+          description: ''
+  /api/fleet/vehicles/{id}/:
+    get:
+      operationId: api_fleet_vehicles_retrieve
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleDetail'
+          description: ''
+    put:
+      operationId: api_fleet_vehicles_update
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Vehicle'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          description: ''
+    patch:
+      operationId: api_fleet_vehicles_partial_update
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicle'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicle'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicle'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          description: ''
+    delete:
+      operationId: api_fleet_vehicles_destroy
+      description: |-
+        ViewSet для управління транспортними засобами з підтримкою:
+        - Фільтрації по типу, паливу, доступності
+        - Пошуку по марці, моделі, номеру
+        - Кастомних ендпоінтів для роботи з техобслуговуванням
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/fleet/vehicles/{id}/mark-maintenance/:
+    patch:
+      operationId: api_fleet_vehicles_mark_maintenance_partial_update
+      description: Позначка про проходження ТО
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleStatus'
+          description: ''
+  /api/fleet/vehicles/{id}/update-status/:
+    patch:
+      operationId: api_fleet_vehicles_update_status_partial_update
+      description: Оновлення статусу доступності транспорту
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Транспортний засіб.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVehicleStatus'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VehicleStatus'
+          description: ''
+  /api/fleet/vehicles/available/:
+    get:
+      operationId: api_fleet_vehicles_available_retrieve
+      description: Список доступних транспортних засобів
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          description: ''
+  /api/fleet/vehicles/by-type/{type}/:
+    get:
+      operationId: api_fleet_vehicles_by_type_retrieve
+      description: Фільтрація транспорту за типом
+      parameters:
+      - in: path
+        name: type
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          description: ''
+  /api/fleet/vehicles/filter-by-type/{type}/:
+    get:
+      operationId: api_fleet_vehicles_filter_by_type_retrieve
+      description: Фільтрація транспорту за типом
+      parameters:
+      - in: path
+        name: type
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Vehicle'
+          description: ''
+  /api/orders/orders/:
+    get:
+      operationId: api_orders_orders_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOrderListList'
+          description: ''
+    post:
+      operationId: api_orders_orders_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreate'
+          description: ''
+  /api/orders/orders/{id}/:
+    get:
+      operationId: api_orders_orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Замовлення.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderDetail'
+          description: ''
+    put:
+      operationId: api_orders_orders_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Замовлення.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCreate'
+          description: ''
+    patch:
+      operationId: api_orders_orders_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Замовлення.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatusUpdate'
+          description: ''
+    delete:
+      operationId: api_orders_orders_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Замовлення.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/orders/orders/{id}/update-status/:
+    patch:
+      operationId: api_orders_orders_update_status_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderStatusUpdate'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatusUpdate'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Ім'я клієнта
+          maxLength: 100
+        phone:
+          type: string
+          title: Телефон
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 17
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+        license_type_display:
+          type: string
+          readOnly: true
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+        is_active:
+          type: boolean
+          title: Активний клієнт
+        registration_date:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата реєстрації
+      required:
+      - id
+      - license_number
+      - license_type
+      - license_type_display
+      - name
+      - phone
+      - registration_date
+    ClientCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          title: Ім'я клієнта
+          maxLength: 100
+        phone:
+          type: string
+        email:
+          type: string
+          format: email
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+      required:
+      - license_number
+      - license_type
+      - name
+      - phone
+    ClientDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Ім'я клієнта
+          maxLength: 100
+        phone:
+          type: string
+          title: Телефон
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 17
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        preferences:
+          title: Переваги
+        registration_date:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата реєстрації
+        is_active:
+          type: boolean
+          title: Активний клієнт
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+      required:
+      - id
+      - license_number
+      - license_type
+      - name
+      - phone
+      - registration_date
+    ClientLicenseUpdate:
+      type: object
+      properties:
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+      required:
+      - license_number
+      - license_type
+    Driver:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: ПІБ водія
+          maxLength: 100
+        license_number:
+          type: string
+          title: Номер посвідчення
+          maxLength: 20
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseType9f4Enum'
+          title: Категорія прав
+        license_type_display:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+        experience:
+          type: integer
+          maximum: 70
+          minimum: 0
+          title: Стаж (роки)
+        is_active:
+          type: boolean
+          title: Активний
+        is_available:
+          type: boolean
+        hire_date:
+          type: string
+          format: date
+          title: Дата найму
+      required:
+      - experience
+      - hire_date
+      - id
+      - license_number
+      - license_type
+      - license_type_display
+      - name
+      - phone
+    DriverCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          title: ПІБ водія
+          maxLength: 100
+        license_number:
+          type: string
+          title: Номер посвідчення
+          maxLength: 20
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseType9f4Enum'
+          title: Категорія прав
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+        experience:
+          type: integer
+          maximum: 70
+          minimum: 0
+          title: Стаж (роки)
+        birth_date:
+          type: string
+          format: date
+          title: Дата народження
+      required:
+      - birth_date
+      - experience
+      - license_number
+      - license_type
+      - name
+      - phone
+    DriverDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: ПІБ водія
+          maxLength: 100
+        license_number:
+          type: string
+          title: Номер посвідчення
+          maxLength: 20
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseType9f4Enum'
+          title: Категорія прав
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+        experience:
+          type: integer
+          maximum: 70
+          minimum: 0
+          title: Стаж (роки)
+        is_active:
+          type: boolean
+          title: Активний
+        is_available:
+          type: boolean
+        hire_date:
+          type: string
+          format: date
+          title: Дата найму
+        birth_date:
+          type: string
+          format: date
+          title: Дата народження
+      required:
+      - birth_date
+      - experience
+      - hire_date
+      - id
+      - license_number
+      - license_type
+      - name
+      - phone
+    DriverStatus:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+          title: Активний
+        is_available:
+          type: boolean
+    FuelTypeEnum:
+      enum:
+      - petrol
+      - diesel
+      - electric
+      - hybrid
+      type: string
+      description: |-
+        * `petrol` - Бензин
+        * `diesel` - Дизель
+        * `electric` - Електро
+        * `hybrid` - Гібрид
+    LicenseType9f4Enum:
+      enum:
+      - B
+      - C
+      - D
+      type: string
+      description: |-
+        * `B` - Легкові авто
+        * `C` - Вантажівки
+        * `D` - Автобуси
+    LicenseTypeAf1Enum:
+      enum:
+      - Passport
+      - Driver license
+      - Car license
+      type: string
+      description: |-
+        * `Passport` - Паспорт
+        * `Driver license` - Посвідчення водія
+        * `Car license` - Паспорт на авто
+    OrderCreate:
+      type: object
+      description: Серіалізатор для створення замовлень (без деталей зв'язаних об'єктів)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        client:
+          type: integer
+          title: Клієнт
+        driver:
+          type: integer
+          nullable: true
+          title: Водій
+        vehicle:
+          type: integer
+          nullable: true
+          title: Транспорт
+        pickup_address:
+          type: string
+          title: Адреса подачі
+        destination:
+          type: string
+          title: Адреса призначення
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+          title: Статус
+        payment_type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentTypeEnum'
+          title: Тип оплати
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: Вартість
+        notes:
+          type: string
+          nullable: true
+          title: Додаткові нотатки
+      required:
+      - client
+      - destination
+      - id
+      - pickup_address
+      - price
+      - status
+    OrderDetail:
+      type: object
+      description: Серіалізатор для детального перегляду (з повними даними зв'язаних
+        моделей)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        client:
+          allOf:
+          - $ref: '#/components/schemas/Client'
+          readOnly: true
+        driver:
+          allOf:
+          - $ref: '#/components/schemas/Driver'
+          readOnly: true
+        vehicle:
+          allOf:
+          - $ref: '#/components/schemas/Vehicle'
+          readOnly: true
+        payment_type_display:
+          type: string
+          readOnly: true
+        status_display:
+          type: string
+          readOnly: true
+        pickup_address:
+          type: string
+          title: Адреса подачі
+        destination:
+          type: string
+          title: Адреса призначення
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+        payment_type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentTypeEnum'
+          title: Тип оплати
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: Вартість
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата створення
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата оновлення
+        notes:
+          type: string
+          nullable: true
+          title: Додаткові нотатки
+      required:
+      - client
+      - created_at
+      - destination
+      - driver
+      - id
+      - payment_type_display
+      - pickup_address
+      - price
+      - status_display
+      - updated_at
+      - vehicle
+    OrderList:
+      type: object
+      description: Серіалізатор для списку замовлень (з основними даними клієнта/водія)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        client:
+          type: string
+          readOnly: true
+        driver:
+          type: string
+          readOnly: true
+        vehicle:
+          type: string
+          readOnly: true
+        pickup_address:
+          type: string
+          title: Адреса подачі
+        destination:
+          type: string
+          title: Адреса призначення
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+        status_display:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: Вартість
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата створення
+      required:
+      - client
+      - created_at
+      - destination
+      - driver
+      - id
+      - pickup_address
+      - price
+      - status_display
+      - vehicle
+    OrderStatusUpdate:
+      type: object
+      description: Серіалізатор для оновлення статусу
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+      required:
+      - status
+    PaginatedClientList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    PaginatedDriverList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Driver'
+    PaginatedOrderListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderList'
+    PaginatedVehicleList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Vehicle'
+    PatchedClient:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Ім'я клієнта
+          maxLength: 100
+        phone:
+          type: string
+          title: Телефон
+          pattern: ^\+?1?\d{9,15}$
+          maxLength: 17
+        email:
+          type: string
+          format: email
+          nullable: true
+          maxLength: 254
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+        license_type_display:
+          type: string
+          readOnly: true
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+        is_active:
+          type: boolean
+          title: Активний клієнт
+        registration_date:
+          type: string
+          format: date-time
+          readOnly: true
+          title: Дата реєстрації
+    PatchedClientLicenseUpdate:
+      type: object
+      properties:
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseTypeAf1Enum'
+          title: Підтверджуючий документ
+        license_number:
+          type: string
+          title: Дані документа
+          maxLength: 100
+    PatchedDriver:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: ПІБ водія
+          maxLength: 100
+        license_number:
+          type: string
+          title: Номер посвідчення
+          maxLength: 20
+        license_type:
+          allOf:
+          - $ref: '#/components/schemas/LicenseType9f4Enum'
+          title: Категорія прав
+        license_type_display:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          title: Телефон
+          maxLength: 20
+        experience:
+          type: integer
+          maximum: 70
+          minimum: 0
+          title: Стаж (роки)
+        is_active:
+          type: boolean
+          title: Активний
+        is_available:
+          type: boolean
+        hire_date:
+          type: string
+          format: date
+          title: Дата найму
+    PatchedDriverStatus:
+      type: object
+      properties:
+        is_active:
+          type: boolean
+          title: Активний
+        is_available:
+          type: boolean
+    PatchedOrderStatusUpdate:
+      type: object
+      description: Серіалізатор для оновлення статусу
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+    PatchedVehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        make:
+          type: string
+          title: Марка
+          maxLength: 50
+        model:
+          type: string
+          title: Модель
+          maxLength: 50
+        license_plate:
+          type: string
+          title: Держномер
+          maxLength: 15
+        vehicle_type:
+          allOf:
+          - $ref: '#/components/schemas/VehicleTypeEnum'
+          title: Тип транспорту
+        vehicle_type_display:
+          type: string
+          readOnly: true
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: 2000
+          title: Рік випуску
+        fuel_type:
+          allOf:
+          - $ref: '#/components/schemas/FuelTypeEnum'
+          title: Тип палива
+        fuel_type_display:
+          type: string
+          readOnly: true
+        mileage:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Пробіг (км)
+        is_available:
+          type: boolean
+          title: Доступний
+        last_maintenance:
+          type: string
+          format: date
+          nullable: true
+          title: Дата останнього ТО
+    PatchedVehicleStatus:
+      type: object
+      properties:
+        is_available:
+          type: boolean
+          title: Доступний
+    PaymentTypeEnum:
+      enum:
+      - cash
+      - card
+      - invoice
+      type: string
+      description: |-
+        * `cash` - Готівка
+        * `card` - Картка
+        * `invoice` - Рахунок
+    StatusEnum:
+      enum:
+      - new
+      - confirmed
+      - in_progress
+      - completed
+      - cancelled
+      type: string
+      description: |-
+        * `new` - Нове
+        * `confirmed` - Підтверджене
+        * `in_progress` - Виконується
+        * `completed` - Завершене
+        * `cancelled` - Скасоване
+    Vehicle:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        make:
+          type: string
+          title: Марка
+          maxLength: 50
+        model:
+          type: string
+          title: Модель
+          maxLength: 50
+        license_plate:
+          type: string
+          title: Держномер
+          maxLength: 15
+        vehicle_type:
+          allOf:
+          - $ref: '#/components/schemas/VehicleTypeEnum'
+          title: Тип транспорту
+        vehicle_type_display:
+          type: string
+          readOnly: true
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: 2000
+          title: Рік випуску
+        fuel_type:
+          allOf:
+          - $ref: '#/components/schemas/FuelTypeEnum'
+          title: Тип палива
+        fuel_type_display:
+          type: string
+          readOnly: true
+        mileage:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Пробіг (км)
+        is_available:
+          type: boolean
+          title: Доступний
+        last_maintenance:
+          type: string
+          format: date
+          nullable: true
+          title: Дата останнього ТО
+      required:
+      - fuel_type
+      - fuel_type_display
+      - id
+      - license_plate
+      - make
+      - model
+      - vehicle_type
+      - vehicle_type_display
+      - year
+    VehicleCreate:
+      type: object
+      properties:
+        make:
+          type: string
+          title: Марка
+          maxLength: 50
+        model:
+          type: string
+          title: Модель
+          maxLength: 50
+        license_plate:
+          type: string
+          title: Держномер
+          maxLength: 15
+        vehicle_type:
+          allOf:
+          - $ref: '#/components/schemas/VehicleTypeEnum'
+          title: Тип транспорту
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: 2000
+          title: Рік випуску
+        fuel_type:
+          allOf:
+          - $ref: '#/components/schemas/FuelTypeEnum'
+          title: Тип палива
+        purchase_date:
+          type: string
+          format: date
+          title: Дата покупки
+        purchase_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: Вартість покупки
+      required:
+      - fuel_type
+      - license_plate
+      - make
+      - model
+      - purchase_date
+      - purchase_price
+      - vehicle_type
+      - year
+    VehicleDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        make:
+          type: string
+          title: Марка
+          maxLength: 50
+        model:
+          type: string
+          title: Модель
+          maxLength: 50
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: 2000
+          title: Рік випуску
+        license_plate:
+          type: string
+          title: Держномер
+          maxLength: 15
+        vehicle_type:
+          allOf:
+          - $ref: '#/components/schemas/VehicleTypeEnum'
+          title: Тип транспорту
+        capacity:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Кількість місць
+        fuel_type:
+          allOf:
+          - $ref: '#/components/schemas/FuelTypeEnum'
+          title: Тип палива
+        mileage:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Пробіг (км)
+        last_maintenance:
+          type: string
+          format: date
+          nullable: true
+          title: Дата останнього ТО
+        is_available:
+          type: boolean
+          title: Доступний
+        purchase_date:
+          type: string
+          format: date
+          title: Дата покупки
+        purchase_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          title: Вартість покупки
+      required:
+      - capacity
+      - fuel_type
+      - id
+      - license_plate
+      - make
+      - model
+      - purchase_date
+      - purchase_price
+      - vehicle_type
+      - year
+    VehicleStatus:
+      type: object
+      properties:
+        is_available:
+          type: boolean
+          title: Доступний
+    VehicleTypeEnum:
+      enum:
+      - sedan
+      - minivan
+      - suv
+      - bus
+      type: string
+      description: |-
+        * `sedan` - Седан
+        * `minivan` - Мінівен
+        * `suv` - Позашляховик
+        * `bus` - Автобус
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
